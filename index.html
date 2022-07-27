@@ -9,6 +9,73 @@
     <script src="https://kit.fontawesome.com/1757e63f00.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hover.css/2.3.1/css/hover-min.css" integrity="sha512-csw0Ma4oXCAgd/d4nTcpoEoz4nYvvnk21a8VA2h2dzhPAvjbUIK6V3si7/g/HehwdunqqW18RwCJKpD7rL67Xg==" crossorigin="anonymous" />
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="./assets/scripts/itemstore.js"></script>
+    <script src="./assets/scripts/func.js"></script>
+    <script>
+            let obj=new ItemRepository();
+        
+        function fillitemdetails(item)
+        {
+            setInputValue('editid',item.id)
+            setInputValue('edititemname',item.itemname)
+            setInputValue('editprice',item.price)
+        }
+      
+        function populateTable(){
+            let items=obj.getitem();
+            const table=getElement('tblrecords')
+            table.innerHTML = '<tr class="table table-bordered table-hover table-striped"><th>Item ID</th><th> Item Title</th><th> Item Price</th><th></tr>'
+            for(const item of items){
+                const row = `<tr><td>${item.id}</td><td>${item.itemname}</td><td>
+                ${item.price}</td><td> <a href="#" class="edit" onclick="setItem(${item.id})">Edit</a></td>
+                <td><a href="#" class="edit" onclick="deleteItem(${item.id})">Delete</a></td></tr>`
+                table.innerHTML += row;
+            }
+        }
+        
+        function deleteItem(id)
+        {
+            const ans = confirm("do u really want to delete");
+            if(ans){
+                obj.deleteItem(id);
+                alert("Itenm deleted")
+            }
+        }
+        function setItem(id)
+        {
+            const foundItem=obj.getitemById(id);
+            fillitemdetails(foundItem);
+        }
+
+        function addClickEvent(){
+            const id=getInputValue('txtid');
+            const itemname=getInputValue('txtitemname');
+            const price=getInputValue('txtprice');
+            const newItem=new Item(id, itemname, price)
+            obj.addItem(newItem);
+            alert("Item added Successfully ! ! !")
+
+        }
+        function onUpdateClick() {
+
+                const id = getInputValue("editid");
+                const title = getInputValue("edititemname");
+                const price = getInputValue("editprice");
+                const updatedItem = new Item(id, title, price);
+                obj.updateItem(updatedItem);
+                alert("Item is updated")
+
+            }
+         function init(){
+           
+
+           getElement('aLink1').addEventListener("click", populateTable);
+           
+
+
+       }
+       window.addEventListener("load",init);
+    </script>
 </head>
 
 <body>
@@ -30,6 +97,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="AddRestaurant.html">Register now</a>
                     </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" id="aLink1">List of item <span class="sr-only"></span></a>
+                      </li>
                 </ul>
             </div>
         </div>
@@ -80,6 +150,17 @@
                 <h1 class="display-4">CopyRights k.karthikeyan</h1>
                 <hr>
             </div>
+        </div>
+    </div>
+    <div class="card">
+        <h2>List of Items</h2>
+        <hr>
+        <div class="card-body">
+            <table class="table table-bordered" id="tblrecords">
+                <thead class="thead-dark">
+
+                </thead>
+            </table>
         </div>
     </div>
    
